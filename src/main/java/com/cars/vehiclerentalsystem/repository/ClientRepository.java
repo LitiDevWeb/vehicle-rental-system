@@ -1,4 +1,11 @@
 package com.cars.vehiclerentalsystem.repository;
 
-public class ClientRepository {
+import com.cars.vehiclerentalsystem.entity.Client;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ClientRepository extends JpaRepository<Client, Integer> {
 }
+
+
