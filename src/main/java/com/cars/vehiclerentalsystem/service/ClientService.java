@@ -8,6 +8,7 @@ import com.cars.vehiclerentalsystem.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ClientService {
@@ -29,6 +30,11 @@ public class ClientService {
 
         Client saveClient = clientRepository.save(client);
         return clientMapper.toDto(saveClient);
+    }
+
+    public List<ClientDtoOut> retrieveClients(){
+        List<Client> clients = clientRepository.findAll();
+        return clientMapper.toDtoList(clients);
     }
 
 

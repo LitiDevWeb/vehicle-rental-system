@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class ClientDtoOut {
+    private Integer clientId;
     private String name;
     private String phoneNumber;
     private Boolean hasUnpaidDebt;

@@ -7,13 +7,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RestController("/clients")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/clients")
 @Tag(name = "Clients", description = "API pour la gestion des clients")
 @Slf4j
 public class ClientController {
@@ -32,5 +31,15 @@ public class ClientController {
 
         return ResponseEntity.ok().body(dtoOut);
     }
+
+    @GetMapping
+    @Operation(summary = "Récuperer la liste des clients",
+            description = "Cette API permet de récuperer la liste des clients.")
+
+    public ResponseEntity<List<ClientDtoOut>> getAllClients(){
+        List<ClientDtoOut> dtoOutList = clientService.retrieveClients();
+        return ResponseEntity.ok().body(dtoOutList);
+    }
+
 
 }

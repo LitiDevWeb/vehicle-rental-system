@@ -1,4 +1,4 @@
 package com.cars.vehiclerentalsystem.repository;
 
-public class InspectionRepository {
+public interface InspectionRepository {
 }
