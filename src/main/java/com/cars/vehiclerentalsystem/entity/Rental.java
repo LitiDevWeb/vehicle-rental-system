@@ -20,6 +20,8 @@ public class Rental {
     private Integer rentalId;
     private Date startDate;
     private Date endDate;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private RentalStatus status;
     private Date createdAt;
 

@@ -37,22 +37,18 @@ public class VehicleService {
         return vehicleMapper.toDto(saveVehicle);
     }
 
-    public List<VehicleDtoOut> retrieveVehicles(){
+    public List<VehicleDtoOut> getVehicles(){
         List<Vehicle> vehicles = vehicleRepository.findAll();
         return vehicleMapper.toDtoList(vehicles);
     }
 
-    public VehicleDtoOut updateStatusVehicle(Integer id, VehicleDtoIn vehicleDtoIn){
-        Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
-        if (optionalVehicle.isEmpty()) {
-            throw new EntityNotFoundException("Véhicule avec l'ID " + id + " introuvable.");
-        }
+    public VehicleDtoOut updateStatusVehicle(Integer id, VehicleDtoIn vehicleDtoIn) {
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule avec l'ID " + id + " introuvable."));
 
-        Vehicle vehicle = optionalVehicle.get();
         vehicle.setStatus(vehicleDtoIn.getStatus());
 
-        Vehicle updateVehicule = vehicleRepository.save(vehicle);
-        return vehicleMapper.toDto(updateVehicule);
-
+        Vehicle updatedVehicle = vehicleRepository.save(vehicle);
+        return vehicleMapper.toDto(updatedVehicle);
     }
 }

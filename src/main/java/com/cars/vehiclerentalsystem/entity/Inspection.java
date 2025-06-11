@@ -17,6 +17,8 @@ public class Inspection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inspectionId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private InspectionStatus status;
     private Date createdAt;
 

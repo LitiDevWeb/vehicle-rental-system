@@ -19,6 +19,8 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer vehicleId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private VehicleStatus status;
     private Double km;
     private Date createdAt;

@@ -38,7 +38,7 @@ public class VehicleController {
             description = "Cette API permet de récuperer la liste des véhicules.")
 
     public ResponseEntity<List<VehicleDtoOut>> getAllVehicles(){
-        List<VehicleDtoOut> dtoOutList = vehicleService.retrieveVehicles();
+        List<VehicleDtoOut> dtoOutList = vehicleService.getVehicles();
         return ResponseEntity.ok().body(dtoOutList);
 
     }
@@ -51,4 +51,9 @@ public class VehicleController {
         VehicleDtoOut updatedDto = vehicleService.updateStatusVehicle(id, vehicleDtoIn);
         return ResponseEntity.ok().body(updatedDto);
     }
+
+
+
+
+
 }
