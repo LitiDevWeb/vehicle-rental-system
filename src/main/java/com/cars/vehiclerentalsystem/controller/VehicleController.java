@@ -53,7 +53,11 @@ public class VehicleController {
     }
 
 
-
-
+    @PostMapping("/returns/{rentalId}")
+    @Operation(summary = "Restituer un véhicule", description = "Cette API permet de restituer un véhicule et a appliquer des penalités en cas d'un retard de plus de 3 jours")
+    public ResponseEntity<VehicleDtoOut> returnVehicle(@PathVariable Integer rentalId){
+        VehicleDtoOut returnDto = vehicleService.returnVehicle(rentalId);
+        return ResponseEntity.ok().body(returnDto);
+    }
 
 }

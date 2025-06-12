@@ -1,0 +1,2 @@
+ALTER TABLE client
+    ADD COLUMN total_penalties DOUBLE PRECISION DEFAULT 0;

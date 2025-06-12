@@ -24,6 +24,8 @@ public class Client {
     private Boolean hasUnpaidDebt;
     private Boolean hasUnpaidCautions;
     private Date createdAt;
+    @Column(name = "total_penalties")
+    private Double totalPenalties;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Rental> rentals;
