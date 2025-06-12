@@ -3,6 +3,7 @@ package com.cars.vehiclerentalsystem.service;
 import com.cars.vehiclerentalsystem.dto.InspectionDtoOut;
 import com.cars.vehiclerentalsystem.entity.Inspection;
 import com.cars.vehiclerentalsystem.entity.Vehicle;
+import com.cars.vehiclerentalsystem.enums.InspectionStatus;
 import com.cars.vehiclerentalsystem.mapper.InspectionMapper;
 import com.cars.vehiclerentalsystem.repository.InspectionRepository;
 import com.cars.vehiclerentalsystem.repository.VehicleRepository;
@@ -50,8 +51,32 @@ public class InspectionService {
         return plannedInspections;
     }
 
+    public List<InspectionDtoOut> getVehiclesToInspect() {
+        Date ninetyDaysAgo = Date.from(LocalDate.now().minusDays(90)
+                .atStartOfDay(ZoneId.systemDefault()).toInstant());
 
+        List<Vehicle> allVehicles = vehicleRepository.findAll();
+        List<InspectionDtoOut> vehiclesToInspect = new ArrayList<>();
 
+        for (Vehicle vehicle : allVehicles) {
+            if (vehicle.getCreatedAt().before(ninetyDaysAgo)) {
 
+                List<Inspection> plannedInspections = inspectionRepository
+                        .findByVehicleVehicleIdAndStatus(vehicle.getVehicleId(), InspectionStatus.PLANNED);
+
+                if (plannedInspections.isEmpty()) {
+                    Inspection inspection = inspectionMapper.createInspectionFromVehicle(vehicle);
+                    inspectionRepository.save(inspection);
+                    vehiclesToInspect.add(inspectionMapper.toDto(inspection));
+                } else {
+                    log.info("Véhicule {} a déjà une inspection planifiée.", vehicle.getVehicleId());
+                }
+
+            } else {
+                log.info("Véhicule {} est récent (moins de 90 jours), pas besoin d'inspection.", vehicle.getVehicleId());
+            }
+        }
+        return vehiclesToInspect;
+    }
 
 }

@@ -5,6 +5,7 @@ import com.cars.vehiclerentalsystem.service.InspectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,4 +34,17 @@ public class InspectionController {
 
         return ResponseEntity.ok(plannedInspections);
     }
+    //
+    @GetMapping
+    @Operation(summary = "Recuperer la liste de vehicules a inspecter",
+            description = "Cette API permet de recuperer la liste de vehicules a inspecter.")
+    public ResponseEntity<List<InspectionDtoOut>> getAllVehiclesToInspect(){
+        List<InspectionDtoOut> plannedInspections = inspectionService.getVehiclesToInspect();
+        if (plannedInspections.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(plannedInspections);
+    }
+
 }
