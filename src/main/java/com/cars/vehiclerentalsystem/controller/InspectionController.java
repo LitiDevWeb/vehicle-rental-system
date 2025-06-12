@@ -34,7 +34,7 @@ public class InspectionController {
 
         return ResponseEntity.ok(plannedInspections);
     }
-    //
+
     @GetMapping
     @Operation(summary = "Recuperer la liste de vehicules a inspecter",
             description = "Cette API permet de recuperer la liste de vehicules a inspecter.")
@@ -46,5 +46,7 @@ public class InspectionController {
 
         return ResponseEntity.ok(plannedInspections);
     }
+
+
 
 }

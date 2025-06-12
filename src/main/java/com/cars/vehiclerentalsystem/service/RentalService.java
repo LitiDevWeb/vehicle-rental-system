@@ -3,14 +3,18 @@ package com.cars.vehiclerentalsystem.service;
 import com.cars.vehiclerentalsystem.dto.RentalDtoIn;
 import com.cars.vehiclerentalsystem.dto.RentalDtoOut;
 import com.cars.vehiclerentalsystem.entity.Client;
+import com.cars.vehiclerentalsystem.entity.Inspection;
 import com.cars.vehiclerentalsystem.entity.Rental;
 import com.cars.vehiclerentalsystem.entity.Vehicle;
+import com.cars.vehiclerentalsystem.enums.InspectionStatus;
 import com.cars.vehiclerentalsystem.enums.RentalStatus;
 import com.cars.vehiclerentalsystem.enums.VehicleStatus;
 import com.cars.vehiclerentalsystem.mapper.RentalMapper;
 import com.cars.vehiclerentalsystem.repository.ClientRepository;
+import com.cars.vehiclerentalsystem.repository.InspectionRepository;
 import com.cars.vehiclerentalsystem.repository.RentalRepository;
 import com.cars.vehiclerentalsystem.repository.VehicleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,18 +24,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class RentalService {
     private final RentalRepository rentalRepository;
     private final ClientRepository clientRepository;
     private final VehicleRepository vehicleRepository;
     private final RentalMapper rentalMapper;
+    private final InspectionRepository inspectionRepository;
 
-    public RentalService(RentalRepository rentalRepository, ClientRepository clientRepository, VehicleRepository vehicleRepository, RentalMapper rentalMapper) {
+    public RentalService(RentalRepository rentalRepository, ClientRepository clientRepository, VehicleRepository vehicleRepository, RentalMapper rentalMapper, InspectionRepository inspectionRepository) {
         this.rentalRepository = rentalRepository;
         this.clientRepository = clientRepository;
         this.vehicleRepository = vehicleRepository;
         this.rentalMapper = rentalMapper;
+        this.inspectionRepository = inspectionRepository;
     }
 
     //RentalDtoOut c'est les donnees qu'on renvoie au client apres traitement (sortie), en entree (params: RentalDtoIn) du client (formulaire)
@@ -86,6 +93,23 @@ public class RentalService {
             throw new IllegalStateException("Ce véhicule a déjà été loué par ce client dans les 15 derniers jours.");
         }
 
+        if (duration > 60) {
+            List<Inspection> inspections = inspectionRepository
+                    .findByVehicleVehicleIdAndCreatedAtAfter(vehicle.getVehicleId(), vehicle.getCreatedAt());
+
+            if (inspections.isEmpty()) {
+                log.warn("Location refusée : véhicule ID {} loué > 60j sans inspection.", vehicleId);
+                throw new IllegalStateException("Impossible de louer plus de 60 jours sans inspection.");
+            }
+
+            inspections.sort((i1, i2) -> i2.getCreatedAt().compareTo(i1.getCreatedAt()));
+            Inspection latestInspection = inspections.get(0);
+
+            if (latestInspection.getStatus() == InspectionStatus.NOT_INSPECTED) {
+                log.warn("Location refusée : dernière inspection NOT_INSPECTED pour véhicule ID {}", vehicleId);
+                throw new IllegalStateException("Le véhicule n’a pas été inspecté récemment.");
+            }
+        }
 
         // on transforme RentalDtoIn en une vraie entité Rental, prête à être enregistrée en bdd.
         Rental rental = rentalMapper.toEntity(rentalDtoIn);
@@ -114,9 +138,8 @@ public class RentalService {
         return rentals.stream()
                 .map(rentalMapper::toDto)
                 .collect(Collectors.toList());
+
     }
-
-
 
 }
 

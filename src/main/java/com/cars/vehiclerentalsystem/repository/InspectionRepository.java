@@ -7,9 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InspectionRepository extends JpaRepository<Inspection, Integer> {
     List<Inspection> findByVehicleVehicleIdAndCreatedAtAfter(Integer vehicleId, Date date);
     List<Inspection> findByVehicleVehicleIdAndStatus(Integer vehicleId, InspectionStatus status);
+    Optional<Inspection> findTop1ByVehicleVehicleIdOrderByCreatedAtDesc(Integer vehicleId);
+
 }
