@@ -15,6 +15,7 @@ public interface RentalRepository extends JpaRepository<Rental, Integer> {
 
     List<Rental> findRentalsByClient_ClientId(Integer clientId);
     List<Rental> findRentalsByClient_ClientIdAndStatus(Integer clientId,RentalStatus status);
+    List<Rental> findByStatusAndEndDateBefore(RentalStatus status, Date cutoffDate);
 
     @Query("SELECT COUNT(r) FROM Rental r WHERE r.client.clientId = :clientId AND r.status = :status")
     long countActiveRentalsByClientId(@Param("clientId") Integer clientId, @Param("status") RentalStatus status);

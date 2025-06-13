@@ -13,6 +13,4 @@ import java.util.Optional;
 public interface InspectionRepository extends JpaRepository<Inspection, Integer> {
     List<Inspection> findByVehicleVehicleIdAndCreatedAtAfter(Integer vehicleId, Date date);
     List<Inspection> findByVehicleVehicleIdAndStatus(Integer vehicleId, InspectionStatus status);
-    Optional<Inspection> findTop1ByVehicleVehicleIdOrderByCreatedAtDesc(Integer vehicleId);
-
 }
